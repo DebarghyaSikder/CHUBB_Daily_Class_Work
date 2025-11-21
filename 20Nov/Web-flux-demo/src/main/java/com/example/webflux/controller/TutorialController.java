@@ -43,13 +43,13 @@ public class TutorialController {
     }
 
 
-    // GET /api/tutorials/published
+ 
     @GetMapping("/published")
     public Flux<Tutorial> getPublished() {
         return service.getPublished();
     }
 
-    // POST /api/tutorials
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<Tutorial> create(@RequestBody Tutorial tutorial) {
@@ -67,7 +67,7 @@ public class TutorialController {
 
 
     // DELETE /api/tutorials/{id}
- // DELETE /api/tutorials/{id}
+
     @DeleteMapping("/{id}")
     public Mono<ResponseEntity<Void>> delete(@PathVariable Long id) {
         return service.getById(id)
