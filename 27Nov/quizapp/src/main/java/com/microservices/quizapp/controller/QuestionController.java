@@ -1,4 +1,4 @@
-package com.microservices.quizapp;
+package com.microservices.quizapp.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class QuestionController {
 	@GetMapping("allQuestions")
 	public String getAllQuestions() {
-		return "Hi, these are our questions";
+		return questionService.getAllQuestions();   // returning object of service layer or service class
 	}
 	
 	
