@@ -27,7 +27,18 @@ public class QuestionService {        // service is just fetching data from DAO 
 
 	public String addQuestion(Question question) {
 		questionDao.save(question);
+		return "success";
 		
+	}
+
+	public String deleteQuestion(Integer id) {
+		questionDao.deleteById(id);
+		return "Deleted"+id+"th question";
+	}
+
+	public String modifyQuestions(Question question) {
+		questionDao.save(question);
+		return "Question Modified";
 	}
 
 }

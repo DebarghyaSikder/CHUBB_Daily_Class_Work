@@ -1,8 +1,11 @@
 package com.microservices.quizapp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,15 +34,28 @@ public class QuestionController {
 	
 	// If we receive json on server side then we don't need to manually change it- Spring will ask us to just specify the json and it will convert it to object
 	// We will send the data from client side to server in the body of the Request
-	
-	
+	 
+	@PostMapping("add")
 	public String addQuestion(@RequestBody Question question) {
 		
 		// Now after receiving the question, need to add that inn database
 
-		questionService.addQuestion(question);
-		return "success";
+	
+		// We should return things coming from the Dao
+		return questionService.addQuestion(question);
 	}
+	
+	@DeleteMapping("deleteQuestion/{id}")
+	public String deleteQuestion(@PathVariable Integer id) {
+		return questionService.deleteQuestion(id);
+	}
+	
+	 @PutMapping("updateQuestion/{id}")
+		public String modifyQuestion(@RequestBody Question question) {
+			return questionService.modifyQuestions(question);	
+		}
+	
+	
 	
 	
 	

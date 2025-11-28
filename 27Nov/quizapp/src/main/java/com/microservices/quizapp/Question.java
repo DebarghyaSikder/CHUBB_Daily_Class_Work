@@ -19,7 +19,7 @@ public class Question {
 
 	// for declaring the id as PK
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	private String questionTitle;
 	private String option1;
