@@ -18,4 +18,16 @@ public class QuestionService {        // service is just fetching data from DAO 
 		return questionDao.findAll();    // finding the list of questions
 	}
 
+	public List<Question> getQuestionsByCategory(String category) {
+		
+		// When we are using Dao since we are using Jpa repository, instead of using Get we will use Find
+		
+		return questionDao.findByCategory(category);
+	}
+
+	public String addQuestion(Question question) {
+		questionDao.save(question);
+		
+	}
+
 }
