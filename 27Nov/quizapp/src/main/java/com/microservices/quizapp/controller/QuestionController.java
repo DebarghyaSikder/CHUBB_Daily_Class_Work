@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.microservices.quizapp.Question;
+import com.microservices.quizapp.model.Question;
 import com.microservices.quizapp.service.QuestionService;
 import java.util.*;
 
