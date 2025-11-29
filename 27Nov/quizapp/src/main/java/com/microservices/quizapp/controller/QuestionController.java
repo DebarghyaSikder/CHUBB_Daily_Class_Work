@@ -1,6 +1,8 @@
 package com.microservices.quizapp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,12 +24,15 @@ public class QuestionController {
 	QuestionService questionService;   // I need object of service and since we are using Spring framework so use Autowired
 	
 	@GetMapping("allQuestions")
-	public List<Question> getAllQuestions() {
-		return questionService.getAllQuestions();   // returning object of service layer or service class
-	}
+	public ResponseEntity<List<Question>> getAllQuestions() {
+		
+		// In response entity we pass two things-data and status code
+		return questionService.getAllQuestions();   // returning the data itsel that we are getting from the service as service is giving response
+	} // getAllQuestions actually returns ResponseEntity
+	
 	
 	@GetMapping("category/{category}")
-	public List<Question> getQuestionsByCategory(@PathVariable String category){
+	public ResponseEntity<List<Question>> getQuestionsByCategory(@PathVariable String category){
 		return questionService.getQuestionsByCategory(category);
 		
 	}
@@ -36,7 +41,7 @@ public class QuestionController {
 	// We will send the data from client side to server in the body of the Request
 	 
 	@PostMapping("add")
-	public String addQuestion(@RequestBody Question question) {
+	public ResponseEntity<String> addQuestion(@RequestBody Question question) {
 		
 		// Now after receiving the question, need to add that inn database
 

@@ -1,7 +1,10 @@
 package com.microservices.quizapp.service;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.microservices.quizapp.Question;
@@ -13,21 +16,34 @@ public class QuestionService {        // service is just fetching data from DAO 
 	@Autowired
 	QuestionDao questionDao;       // I need QuestionDao objects here so that I can get all the questions
 	
-	public List<Question> getAllQuestions() {
-		// TODO Auto-generated method stub
-		return questionDao.findAll();    // finding the list of questions
-	}
+	public ResponseEntity<List<Question>> getAllQuestions() {
+		try {
+		return new ResponseEntity<>(questionDao.findAll(), HttpStatus.OK);    // finding the list of questions
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);    // returning an empty
+		}
 
-	public List<Question> getQuestionsByCategory(String category) {
+	public ResponseEntity<List<Question>> getQuestionsByCategory(String category) {
 		
 		// When we are using Dao since we are using Jpa repository, instead of using Get we will use Find
 		
-		return questionDao.findByCategory(category);
+		try {
+			return new ResponseEntity<>(questionDao.findAll(), HttpStatus.OK);    // finding the list of questions
+			}
+			catch(Exception e) {
+				e.printStackTrace();
+			}
+			return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);    // returning an empty
+
+			
 	}
 
-	public String addQuestion(Question question) {
+	public ResponseEntity<String> addQuestion(Question question) {
 		questionDao.save(question);
-		return "success";
+		return new ResponseEntity<>("success", HttpStatus.CREATED);  // since its data on server it should be CEATED
 		
 	}
 
