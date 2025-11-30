@@ -14,6 +14,7 @@ import com.microservices.quizapp.dao.QuizDao;
 import com.microservices.quizapp.model.Question;
 import com.microservices.quizapp.model.QuestionWrapper;
 import com.microservices.quizapp.model.Quiz;
+import com.microservices.quizapp.model.Response;
 
 @Service
 public class QuizService {
@@ -52,5 +53,21 @@ public class QuizService {
 		}
 		
 		return new ResponseEntity<>(questionsForUser, HttpStatus.OK);
+	}
+
+	public ResponseEntity<Integer> calculateResult(Integer id, List<Response> responses) {
+		Quiz quiz=quizDao.findById(id).get(); // findByid gives optional ddata so for getting the data use .get() method
+		// Once we got the quiz get the questions from tthe quiz
+		List<Question> questions=quiz.getQuestions();
+		int right=0;
+		int i=0;
+		
+		for(Response response: responses) {
+			if(response.getResponse().equals(questions.get(i).getRightAnswer())) // comparing response with the right answer
+				right++;
+			
+			i++;
+		}
+		return new ResponseEntity<>(right, HttpStatus.OK);
 	}
 }
