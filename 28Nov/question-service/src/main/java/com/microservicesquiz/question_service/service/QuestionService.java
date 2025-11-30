@@ -8,9 +8,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.microservices.quizapp.model.Quiz;
 import com.microservicesquiz.question_service.dao.QuestionDao;
 import com.microservicesquiz.question_service.model.Question;
 import com.microservicesquiz.question_service.model.QuestionWrapper;
+import com.microservicesquiz.question_service.model.Response;
 
 
 @Service
@@ -74,7 +76,35 @@ public class QuestionService {        // service is just fetching data from DAO 
 			questions.add(questionDao.findById(id).get());
 		}
 		
+		// Now we do not want questions but the wrapper as we do not want the answer
+		for(Question question: questions) {
+			QuestionWrapper wrapper=new QuestionWrapper();
+			wrapper.setId(question.getId());
+			wrapper.setQuestionTitle(question.getQuestionTitle());
+			wrapper.setOption1(question.getOption1());
+			wrapper.setOption2(question.getOption2());
+			wrapper.setOption3(question.getOption3());
+			wrapper.setOption4(question.getOption4());
+			
+			// We created one question wrapper at a time. And now adding it to the list
+			wrappers.add(wrapper);
+			
+		}
+		
 		return new ResponseEntity<>(wrappers, HttpStatus.OK);
 	}
+	
+	// To calculate score
+	public ResponseEntity<Integer> getScore(List<Response> responses){
+		int right=0;
+		
+		for(Response response: responses) {
+			Question question=questionDao.findById(response.getId()).get();
+			if(response.getResponse().equals(question.getRightAnswer())) // comparing response with the right answer
+				right++;
+		}
+		return new ResponseEntity<>(right, HttpStatus.OK);
+	}
+	
 
 }

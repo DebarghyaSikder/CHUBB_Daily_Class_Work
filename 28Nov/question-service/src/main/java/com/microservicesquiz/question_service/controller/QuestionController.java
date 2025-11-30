@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.microservicesquiz.question_service.model.Question;
 import com.microservicesquiz.question_service.model.QuestionWrapper;
+import com.microservicesquiz.question_service.model.Response;
 import com.microservicesquiz.question_service.service.QuestionService;
 
 import java.util.*;
@@ -74,6 +75,12 @@ public class QuestionController {
 	 @PostMapping("getQuestions")   // if a quiz service is requesting the questions for a particular id
 	 public ResponseEntity<List<QuestionWrapper>> getQuestionsFromId(@RequestBody List<Integer> questionIds){
 		 return questionService.getQuestionsByCategory(questionIds);
+	 }
+	 
+	 // To get the score
+	 @PostMapping("getScore")
+	 public ResponseEntity<Integer> getScore(@RequestBody List<Response> response){
+		 return questionService.getScore(responses);
 	 }
 	 
 	
