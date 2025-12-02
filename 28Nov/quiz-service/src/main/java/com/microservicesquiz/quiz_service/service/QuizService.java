@@ -26,7 +26,11 @@ public class QuizService {
 
     public ResponseEntity<String> createQuiz(String category, int numQ, String title) {
 
-//        List<Integer> questions = quizInterface.getQuestionsForQuiz(category, numQ).getBody();
+//        List<Integer> questions = // call the generate url- RestTemplate (it sends requests to other servers) http://localhost:8080/question/generate
+        		
+        		// Feign service prevents hardcoding all port numbers and other values. It helps to declare what we want and to declare what are the APIS I want exposed
+        		// By using Eureka we are solving the problem of IP address and port no. and by Feign we can request directly to the service with the service name
+        		
 //        Quiz quiz = new Quiz();
 //        quiz.setTitle(title);
 //        quiz.setQuestionIds(questions);
@@ -37,30 +41,30 @@ public class QuizService {
     }
 
     public ResponseEntity<List<QuestionWrapper>> getQuizQuestions(Integer id) {
-          Optional<Quiz> quiz=quizDao.findById(id);
-          List<Question> questionsFromDB=quiz.get().getQuestions();
-          List<QuestionWrapper> questionsForUser=new ArrayList<>();
-          for(Question q:questionsFromDB) {
-        	  QuestionWrapper qw=new QuestionWrapper(q.getId(), q.getQuestionTitle(),q.getOption1(),q.getOption2(),q.getOption3(),q.getOption4());
-        	  questionsForUser.add(qw);
-          }
+//          Optional<Quiz> quiz=quizDao.findById(id);
+//          List<Question> questionsFromDB=quiz.get().getQuestions();
+            List<QuestionWrapper> questionsForUser=new ArrayList<>();
+//          for(Question q:questionsFromDB) {
+//        	  QuestionWrapper qw=new QuestionWrapper(q.getId(), q.getQuestionTitle(),q.getOption1(),q.getOption2(),q.getOption3(),q.getOption4());
+//        	  questionsForUser.add(qw);
+//          }
           return new ResponseEntity<>(questionsForUser, HttpStatus.OK);
 
     }
 
     public ResponseEntity<Integer> calculateResult(Integer id, List<Response> responses) {
         Quiz quiz=quizDao.findById(id).get();
-        List<Question> questions=quiz.getQuestions();
-        
+//        List<Question> questions=quiz.getQuestions();
+//        
         int right=0;
-		int i=0;
-		
-		for(Response response: responses) {
-			if(response.getResponse().equals(questions.get(i).getRightAnswer())) // comparing response with the right answer
-				right++;
-			
-			i++;
-		}
+//		int i=0;
+//		
+//		for(Response response: responses) {
+//			if(response.getResponse().equals(questions.get(i).getRightAnswer())) // comparing response with the right answer
+//				right++;
+//			
+//			i++;
+//		}
 		return new ResponseEntity<>(right, HttpStatus.OK);
     }
 }

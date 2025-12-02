@@ -2,6 +2,8 @@ package com.microservicesquiz.quiz_service.model;
 
 import java.util.List;
 
+import org.aspectj.weaver.patterns.TypePatternQuestions.Question;
+
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,5 +23,10 @@ public class Quiz {
 
     @ElementCollection
     private List<Integer> questionIds;
+
+	public List<Question> getQuestions() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
