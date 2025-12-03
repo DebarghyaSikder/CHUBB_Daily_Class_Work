@@ -2,6 +2,7 @@ package com.microservicesquiz.question_service.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,6 +28,9 @@ public class QuestionController {
 	
 	@Autowired
 	QuestionService questionService;   // I need object of service and since we are using Spring framework so use Autowired
+	
+	@Autowired
+	Environment environment;
 	
 	@GetMapping("allQuestions")
 	public ResponseEntity<List<Question>> getAllQuestions() {
@@ -74,6 +78,8 @@ public class QuestionController {
 	 
 	 @PostMapping("getQuestions")   // if a quiz service is requesting the questions for a particular id
 	 public ResponseEntity<List<QuestionWrapper>> getQuestionsFromId(@RequestBody List<Integer> questionIds){
+		 System.out.println(environment.getProperty("local.server.port"));
+		 
 		 return questionService.getQuestionsByCategory(questionIds);
 	 }
 	 

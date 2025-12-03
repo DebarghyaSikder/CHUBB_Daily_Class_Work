@@ -20,13 +20,13 @@ public interface QuizInterface {
 	// Quiz service need to tell Question service which services or methods it will access(only 3 methods out of many)
 	
 	
-	@GetMapping("generate")
+	@GetMapping("question/generate")
 	 public ResponseEntity<List<Integer>> getQuestionsForQuiz(@RequestParam String categoryName, @RequestParam Integer numQuestions);
 	 
-	 @PostMapping("getQuestions")   // if a quiz service is requesting the questions for a particular id
+	 @PostMapping("question/getQuestions")   // if a quiz service is requesting the questions for a particular id
 	 public ResponseEntity<List<QuestionWrapper>> getQuestionsFromId(@RequestBody List<Integer> questionIds);
 	 
 	 // To get the score
-	 @PostMapping("getScore")
+	 @PostMapping("question/getScore")
 	 public ResponseEntity<Integer> getScore(@RequestBody List<Response> responses);
 }

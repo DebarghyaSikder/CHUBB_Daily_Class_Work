@@ -48,30 +48,23 @@ public class QuizService {
     }
 
     public ResponseEntity<List<QuestionWrapper>> getQuizQuestions(Integer id) {
-//          Optional<Quiz> quiz=quizDao.findById(id);
-//          List<Question> questionsFromDB=quiz.get().getQuestions();
-            List<QuestionWrapper> questionsForUser=new ArrayList<>();
-//          for(Question q:questionsFromDB) {
-//        	  QuestionWrapper qw=new QuestionWrapper(q.getId(), q.getQuestionTitle(),q.getOption1(),q.getOption2(),q.getOption3(),q.getOption4());
-//        	  questionsForUser.add(qw);
-//          }
-          return new ResponseEntity<>(questionsForUser, HttpStatus.OK);
+          Quiz quiz=quizDao.findById(id).get();
+          // Before getting the questions from the question service first get the question nos. by specifying ht equiz id
+          List<Integer> questionIds=quiz.getQuestionIds();
+
+          quizInterface.getQuestionsFromId(questionIds);
+          
+          ResponseEntity<List<QuestionWrapper>> questions=quizInterface.getQuestionsFromId(questionIds);  // we got the list of questions
+          
+          return questions; // returning the Response object
 
     }
 
     public ResponseEntity<Integer> calculateResult(Integer id, List<Response> responses) {
-        Quiz quiz=quizDao.findById(id).get();
-//        List<Question> questions=quiz.getQuestions();
-//        
-        int right=0;
-//		int i=0;
-//		
-//		for(Response response: responses) {
-//			if(response.getResponse().equals(questions.get(i).getRightAnswer())) // comparing response with the right answer
-//				right++;
-//			
-//			i++;
-//		}
-		return new ResponseEntity<>(right, HttpStatus.OK);
+        // quiz interface will call the getScore method and it will retrun the score in ResponseEntity format
+    	
+    	ResponseEntity<Integer> score=quizInterface.getScore(responses);
+    	
+		return score;
     }
 }
