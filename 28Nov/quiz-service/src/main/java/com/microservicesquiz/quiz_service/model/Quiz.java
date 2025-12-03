@@ -21,12 +21,7 @@ public class Quiz {
     private Integer id;
     private String title;
 
-    @ElementCollection
-    private List<Integer> questionIds;
-
-	public List<Question> getQuestions() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @ElementCollection   // since we are storing only the ids and not the questions which are of a single type Integer so use ElementCOllection
+    private List<Integer> questionIds; 
 
 }

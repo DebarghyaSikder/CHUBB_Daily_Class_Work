@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.microservicesquiz.quiz_service.dao.QuizDao;
+import com.microservicesquiz.quiz_service.feign.QuizInterface;
 import com.microservicesquiz.quiz_service.model.QuestionWrapper;
 import com.microservicesquiz.quiz_service.model.Quiz;
 import com.microservicesquiz.quiz_service.model.Response;
@@ -21,21 +22,27 @@ public class QuizService {
 
     @Autowired
     QuizDao quizDao;
-;
-
+    
+    @Autowired
+    QuizInterface quizInterface; // We will not use Rest template but this to make call to the question service
 
     public ResponseEntity<String> createQuiz(String category, int numQ, String title) {
 
-//        List<Integer> questions = // call the generate url- RestTemplate (it sends requests to other servers) http://localhost:8080/question/generate
         		
-        		// Feign service prevents hardcoding all port numbers and other values. It helps to declare what we want and to declare what are the APIS I want exposed
+        		// Feign service prevents hardcoding all port numbers and other values. It helps to declare what we want and to declare what are the APIS I want exposed. It help to connect wit the service we want
         		// By using Eureka we are solving the problem of IP address and port no. and by Feign we can request directly to the service with the service name
         		
-//        Quiz quiz = new Quiz();
-//        quiz.setTitle(title);
-//        quiz.setQuestionIds(questions);
-//        quizDao.save(quiz);
+    	// We need the ids and not the actual questions and user the quiz interface to call the method
+    	List<Integer> questions=quizInterface.getQuestionsForQuiz(category, numQ).getBody();   // it gives response entity but to get only list of questions nI will use getBody
 
+    	Quiz quiz=new Quiz();
+    	quiz.setTitle(title);
+    	quiz.setQuestionIds(questions);
+    	// saving the quiz in the database
+    	quizDao.save(quiz);
+    	
+    	// Quiz service ask the questions to the Question service with the help of feign client
+    	
         return new ResponseEntity<>("Success", HttpStatus.CREATED);
 
     }
