@@ -3,6 +3,7 @@ package com.redidpractice.redis_project.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +19,11 @@ public class TutorialService {
         this.tutorialRepository = tutorialRepository;
     }
 
+    // ---------- READ (CACHED) ----------
+
     @Cacheable("tutorials")
     public List<Tutorial> findAll() {
-        doLongRunningTask();
+        doLongRunningTask(); // simulate slow DB call
         return tutorialRepository.findAll();
     }
 
@@ -31,7 +34,7 @@ public class TutorialService {
     }
 
     @Cacheable("tutorial")
-    public Optional<Tutorial> findById(String id) {  
+    public Optional<Tutorial> findById(String id) {
         doLongRunningTask();
         return tutorialRepository.findById(id);
     }
@@ -40,6 +43,27 @@ public class TutorialService {
     public List<Tutorial> findByPublished(boolean isPublished) {
         doLongRunningTask();
         return tutorialRepository.findByPublished(isPublished);
+    }
+
+    // ---------- WRITE (EVICT CACHE) ----------
+
+    @CacheEvict(value = { "tutorials", "tutorial", "published_tutorials" }, allEntries = true)
+    public Tutorial save(Tutorial tutorial) {
+        return tutorialRepository.save(tutorial);
+    }
+
+    @CacheEvict(value = { "tutorials", "tutorial", "published_tutorials" }, allEntries = true)
+    public void deleteById(String id) {
+        tutorialRepository.deleteById(id);
+    }
+
+    @CacheEvict(value = { "tutorials", "tutorial", "published_tutorials" }, allEntries = true)
+    public void deleteAll() {
+        tutorialRepository.deleteAll();
+    }
+
+    public boolean existsById(String id) {
+        return tutorialRepository.existsById(id);
     }
 
     private void doLongRunningTask() {
