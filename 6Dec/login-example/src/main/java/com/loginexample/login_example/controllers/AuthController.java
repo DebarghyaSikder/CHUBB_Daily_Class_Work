@@ -219,4 +219,64 @@ public class AuthController {
 
         return ResponseEntity.ok(new MessageResponse("Email verified successfully!"));
     }
+    
+    
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+
+        Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
+        if (userOpt.isEmpty()) {
+            // For security, don't reveal whether email exists
+            return ResponseEntity.ok(new MessageResponse("If an account exists, a reset link was sent."));
+        }
+
+        User user = userOpt.get();
+
+        String token = UUID.randomUUID().toString();
+        Instant expiry = Instant.now().plus(1, ChronoUnit.HOURS);
+
+        PasswordResetToken resetToken = new PasswordResetToken(token, user, expiry);
+        passwordResetTokenRepository.save(resetToken);
+
+        String resetLink = baseUrl + "/api/auth/reset-password?token=" + token;
+
+        emailService.sendEmail(
+                user.getEmail(),
+                "Password reset request",
+                "Hi " + user.getUsername() +
+                        ",\n\nClick the link below to reset your password:\n" +
+                        resetLink +
+                        "\n\nThis link will expire in 1 hour."
+        );
+
+        return ResponseEntity.ok(new MessageResponse("If an account exists, a reset link was sent."));
+    }
+    
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+
+        var tokenOpt = passwordResetTokenRepository.findByToken(request.getToken());
+        if (tokenOpt.isEmpty()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Invalid password reset token"));
+        }
+
+        PasswordResetToken resetToken = tokenOpt.get();
+
+        if (resetToken.getExpiryDate().isBefore(Instant.now())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Password reset token has expired"));
+        }
+
+        User user = resetToken.getUser();
+        user.setPassword(encoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+
+        passwordResetTokenRepository.delete(resetToken);
+
+        return ResponseEntity.ok(new MessageResponse("Password has been reset successfully!"));
+    }
+    
 }
