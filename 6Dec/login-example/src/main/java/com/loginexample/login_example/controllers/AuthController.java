@@ -149,6 +149,27 @@ public class AuthController {
         user.setRoles(roles);
         userRepository.save(user);
 
+        
+     // generate verification token valid for 24 hours
+        String token = UUID.randomUUID().toString();
+        Instant expiry = Instant.now().plus(24, ChronoUnit.HOURS);
+
+        VerificationToken verificationToken =
+                new VerificationToken(token, user, expiry);
+        verificationTokenRepository.save(verificationToken);
+
+        String verifyLink = baseUrl + "/api/auth/verify-email?token=" + token;
+
+        emailService.sendEmail(
+                user.getEmail(),
+                "Please verify your email",
+                "Hi " + user.getUsername() +
+                        ",\n\nPlease verify your email by clicking the link below:\n" +
+                        verifyLink +
+                        "\n\nThis link will expire in 24 hours."
+        );
+        
+        
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 
