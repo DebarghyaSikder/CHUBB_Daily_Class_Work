@@ -32,6 +32,9 @@ public class User {
     @NotBlank
     @Size(max = 120)
     private String password;
+    
+    @Column(nullable = false)
+    private boolean emailVerified = false;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
@@ -64,4 +67,12 @@ public class User {
 
     public Set<Role> getRoles() { return roles; }
     public void setRoles(Set<Role> roles) { this.roles = roles; }
+    
+    public boolean isEmailVerified() {
+        return emailVerified;
+    }
+
+    public void setEmailVerified(boolean emailVerified) {
+        this.emailVerified = emailVerified;
+    }
 }
