@@ -19,6 +19,22 @@ import com.loginexample.login_example.repository.*;
 import com.loginexample.login_example.security.jwt.JwtUtils;
 import com.loginexample.login_example.security.services.UserDetailsImpl;
 
+
+
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.UUID;
+
+import com.loginexample.login_example.models.VerificationToken;
+import com.loginexample.login_example.models.PasswordResetToken;
+import com.loginexample.login_example.repository.VerificationTokenRepository;
+import com.loginexample.login_example.repository.PasswordResetTokenRepository;
+import com.loginexample.login_example.service.EmailService;
+
+import org.springframework.beans.factory.annotation.Value;
+
+
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -29,18 +45,30 @@ public class AuthController {
     private final PasswordEncoder encoder;
     private final JwtUtils jwtUtils;
 
+    private final VerificationTokenRepository verificationTokenRepository;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final EmailService emailService;
+    
+    @Value("${app.frontend.base-url:http://localhost:8080}")
+    private String baseUrl;
+
     public AuthController(AuthenticationManager authenticationManager,
                           UserRepository userRepository,
                           RoleRepository roleRepository,
                           PasswordEncoder encoder,
-                          JwtUtils jwtUtils) {
+                          JwtUtils jwtUtils,
+                          VerificationTokenRepository verificationTokenRepository,
+                          PasswordResetTokenRepository passwordResetTokenRepository,
+                          EmailService emailService) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
+        this.verificationTokenRepository = verificationTokenRepository;
+        this.passwordResetTokenRepository = passwordResetTokenRepository;
+        this.emailService = emailService;
     }
-
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest,
                                               jakarta.servlet.http.HttpServletResponse response) {
