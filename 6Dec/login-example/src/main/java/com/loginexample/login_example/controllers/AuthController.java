@@ -77,9 +77,22 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getUsername(),
                         loginRequest.getPassword()));
+        
+        
+        
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        
+     // fetch full User to check emailVerified
+        User user = userRepository.findById(userDetails.getId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!user.isEmailVerified()) {
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body(new MessageResponse("Please verify your email before logging in."));
+        }
 
         var jwtCookie = jwtUtils.generateJwtCookie(userDetails);
         response.addCookie(jwtCookie);
@@ -178,5 +191,32 @@ public class AuthController {
         var cookie = jwtUtils.getCleanJwtCookie();
         response.addCookie(cookie);
         return ResponseEntity.ok(new MessageResponse("You've been signed out!"));
+    }
+    
+    @GetMapping("/verify-email")
+    public ResponseEntity<?> verifyEmail(@RequestParam("token") String token) {
+
+        var tokenOpt = verificationTokenRepository.findByToken(token);
+        if (tokenOpt.isEmpty()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Invalid verification token"));
+        }
+
+        VerificationToken verificationToken = tokenOpt.get();
+
+        if (verificationToken.getExpiryDate().isBefore(Instant.now())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Verification token has expired"));
+        }
+
+        User user = verificationToken.getUser();
+        user.setEmailVerified(true);
+        userRepository.save(user);
+
+        verificationTokenRepository.delete(verificationToken);
+
+        return ResponseEntity.ok(new MessageResponse("Email verified successfully!"));
     }
 }
