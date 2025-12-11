@@ -1,0 +1,12 @@
+INSERT INTO roles(name) VALUES('ROLE_USER');
+INSERT INTO roles(name) VALUES('ROLE_MODERATOR');
+INSERT INTO roles(name) VALUES('ROLE_ADMIN');
+
+
+https://www.bezkoder.com/docker-compose-spring-boot-postgres/
+
+https://www.youtube.com/watch?v=Ob6n2AlDqEA
+
+https://github.com/tcspariwesh/springboot-25-sept/
+
+Each spring boot project will have a Docker file.
